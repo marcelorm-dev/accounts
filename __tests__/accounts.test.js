@@ -21,13 +21,11 @@ describe("Deposit", () => {
     const account = new Account("Test Account");
     expect(account.getBalance()).toBe(0);
 
-    ["", "abc", "!)", "91a"].forEach((value) => {
-      expectError(
-        () => account.deposit(value),
-        OperationError,
-        "O valor do depósito deve ser um número.",
-      );
-    });
+    const expectedMessage = "O valor do depósito deve ser um número.";
+
+    expectError(() => account.deposit(""), OperationError, expectedMessage);
+    expectError(() => account.deposit("abc"), OperationError, expectedMessage);
+    expectError(() => account.deposit("91a"), OperationError, expectedMessage);
 
     expect(account.getBalance()).toBe(0);
   });
@@ -58,11 +56,11 @@ describe("Withdraw", () => {
     const account = new Account("Test Account");
     account.deposit(15);
 
-    ["", "abc", "!)", "91a"].forEach((value) => {
-      const expectThrow = () => account.withdraw(value);
-      expect(expectThrow).toThrow(OperationError);
-      expect(expectThrow).toThrow("O valor do saque deve ser um número.");
-    });
+    const expectedMessage = "O valor do saque deve ser um número.";
+
+    expectError(() => account.withdraw(""), OperationError, expectedMessage);
+    expectError(() => account.withdraw("abc"), OperationError, expectedMessage);
+    expectError(() => account.withdraw("91a"), OperationError, expectedMessage);
 
     expect(account.getBalance()).toBe(15);
   });
@@ -71,9 +69,11 @@ describe("Withdraw", () => {
     const account = new Account("Test Account");
     account.deposit(15);
 
-    const expectThrow = () => account.withdraw(-1);
-    expect(expectThrow).toThrow(OperationError);
-    expect(expectThrow).toThrow("O valor do saque deve ser positivo.");
+    expectError(
+      () => account.withdraw(-1),
+      OperationError,
+      "O valor do saque deve ser positivo.",
+    );
 
     expect(account.getBalance()).toBe(15);
   });
@@ -82,9 +82,11 @@ describe("Withdraw", () => {
     const account = new Account("Test Account");
     account.deposit(15);
 
-    const expectThrow = () => account.withdraw(20);
-    expect(expectThrow).toThrow(OperationError);
-    expect(expectThrow).toThrow("Saldo insuficiente para realizar o saque.");
+    expectError(
+      () => account.withdraw(20),
+      OperationError,
+      "Saldo insuficiente para realizar o saque.",
+    );
 
     expect(account.getBalance()).toBe(15);
   });
