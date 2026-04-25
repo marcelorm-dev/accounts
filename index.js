@@ -10,8 +10,6 @@ function findAccount(accountName) {
   return accounts.find((account) => account.getName() === accountName);
 }
 
-function setCurrentAccount() {}
-
 async function createAccount() {
   console.log(chalk.bgGreen("Parabéns por escolher o nosso banco!"));
   console.log(chalk.green("Defina as opções da sua conta a seguir:"));
@@ -37,20 +35,28 @@ async function buildAccount() {
   askForAction();
 }
 
-async function checkBalance() {
-  try {
-    if (!currentAccount) {
-      const accountName = await new Input({
-        name: "balance",
-        message: "Digite o nome da conta para consultar o saldo:",
-      }).run();
-
-      currentAccount = findAccount(accountName);
-    }
+async function checkAccountForAction(input) {
+  if (!currentAccount) {
+    const accountName = await input.run();
+    currentAccount = findAccount(accountName);
 
     if (!currentAccount) {
       console.log(chalk.red("Conta não existe!"));
       buildAccount();
+    }
+  }
+}
+
+async function checkBalance() {
+  try {
+    checkAccountForAction(
+      new Input({
+        name: "balance",
+        message: "Digite o nome da conta para consultar o saldo:",
+      }),
+    );
+
+    if (!currentAccount) {
       return;
     }
 
@@ -59,27 +65,23 @@ async function checkBalance() {
         `O saldo da conta ${currentAccount.getName()} é: R$${currentAccount.getBalance()}`,
       ),
     );
+
+    askForAction();
   } catch (error) {
     console.error(error);
   }
-
-  askForAction();
 }
 
 async function deposit() {
   try {
-    if (!currentAccount) {
-      const accountName = await new Input({
+    checkAccountForAction(
+      new Input({
         name: "deposit",
         message: "Digite o nome da conta para depositar:",
-      }).run();
-
-      currentAccount = findAccount(accountName);
-    }
+      }),
+    );
 
     if (!currentAccount) {
-      console.log(chalk.red("Conta não existe!"));
-      buildAccount();
       return;
     }
 
@@ -112,18 +114,14 @@ async function deposit() {
 
 async function withdraw() {
   try {
-    if (!currentAccount) {
-      const accountName = await new Input({
+    checkAccountForAction(
+      new Input({
         name: "withdraw",
         message: "Digite o nome da conta para sacar:",
-      }).run();
-
-      currentAccount = findAccount(accountName);
-    }
+      }),
+    );
 
     if (!currentAccount) {
-      console.log(chalk.red("Conta não existe!"));
-      buildAccount();
       return;
     }
 
