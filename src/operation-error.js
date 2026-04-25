@@ -1,7 +1,7 @@
 class OperationError extends Error {
   constructor(message) {
     super(message);
-    this.name = "MeuErroPersonalizado";
+    this.name = "OperationError";
   }
 }
 

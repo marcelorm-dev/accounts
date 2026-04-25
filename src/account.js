@@ -1,4 +1,4 @@
-const OperationError = require("../operation-error");
+const OperationError = require("./operation-error");
 
 class Account {
   constructor(name) {
@@ -15,7 +15,7 @@ class Account {
   }
 
   deposit(amount) {
-    if (typeof amount !== "number" && !Number.isInteger(amount)) {
+    if (typeof amount !== "number" || !Number.isFinite(amount)) {
       throw new OperationError("O valor do depósito deve ser um número.");
     }
 
@@ -27,7 +27,7 @@ class Account {
   }
 
   withdraw(amount) {
-    if (typeof amount !== "number" && !Number.isInteger(amount)) {
+    if (typeof amount !== "number" || !Number.isFinite(amount)) {
       throw new OperationError("O valor do saque deve ser um número.");
     }
 
@@ -39,7 +39,7 @@ class Account {
       throw new OperationError("Saldo insuficiente para realizar o saque.");
     }
 
-    this.balance -= amount;
+    this.balance -= parseFloat(amount);
   }
 }
 

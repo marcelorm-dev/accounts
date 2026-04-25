@@ -1,6 +1,5 @@
 const Account = require("../src/account");
-const OperationError = require("../operation-error");
-const { expectError } = require("./utils/expect_error");
+const OperationError = require("../src/operation-error");
 
 describe("Account", () => {
   test("Given initial balance, when creating an account, then it sets the balance", () => {
@@ -23,9 +22,14 @@ describe("Deposit", () => {
 
     const expectedMessage = "O valor do depósito deve ser um número.";
 
-    expectError(() => account.deposit(""), OperationError, expectedMessage);
-    expectError(() => account.deposit("abc"), OperationError, expectedMessage);
-    expectError(() => account.deposit("91a"), OperationError, expectedMessage);
+    expect(() => account.deposit("")).toThrow(OperationError);
+    expect(() => account.deposit("")).toThrow(expectedMessage);
+    expect(() => account.deposit("abc")).toThrow(OperationError);
+    expect(() => account.deposit("abc")).toThrow(expectedMessage);
+    expect(() => account.deposit("91a")).toThrow(OperationError);
+    expect(() => account.deposit("91a")).toThrow(expectedMessage);
+    expect(() => account.deposit(NaN)).toThrow(OperationError);
+    expect(() => account.deposit(NaN)).toThrow(expectedMessage);
 
     expect(account.getBalance()).toBe(0);
   });
@@ -34,9 +38,8 @@ describe("Deposit", () => {
     const account = new Account("Test Account");
     expect(account.getBalance()).toBe(0);
 
-    expectError(
-      () => account.deposit(-1),
-      OperationError,
+    expect(() => account.deposit(-1)).toThrow(OperationError);
+    expect(() => account.deposit(-1)).toThrow(
       "O valor do depósito deve ser positivo.",
     );
 
@@ -58,9 +61,14 @@ describe("Withdraw", () => {
 
     const expectedMessage = "O valor do saque deve ser um número.";
 
-    expectError(() => account.withdraw(""), OperationError, expectedMessage);
-    expectError(() => account.withdraw("abc"), OperationError, expectedMessage);
-    expectError(() => account.withdraw("91a"), OperationError, expectedMessage);
+    expect(() => account.withdraw("")).toThrow(OperationError);
+    expect(() => account.withdraw("")).toThrow(expectedMessage);
+    expect(() => account.withdraw("abc")).toThrow(OperationError);
+    expect(() => account.withdraw("abc")).toThrow(expectedMessage);
+    expect(() => account.withdraw("91a")).toThrow(OperationError);
+    expect(() => account.withdraw("91a")).toThrow(expectedMessage);
+    expect(() => account.withdraw(NaN)).toThrow(OperationError);
+    expect(() => account.withdraw(NaN)).toThrow(expectedMessage);
 
     expect(account.getBalance()).toBe(15);
   });
@@ -69,9 +77,8 @@ describe("Withdraw", () => {
     const account = new Account("Test Account");
     account.deposit(15);
 
-    expectError(
-      () => account.withdraw(-1),
-      OperationError,
+    expect(() => account.withdraw(-1)).toThrow(OperationError);
+    expect(() => account.withdraw(-1)).toThrow(
       "O valor do saque deve ser positivo.",
     );
 
@@ -82,9 +89,8 @@ describe("Withdraw", () => {
     const account = new Account("Test Account");
     account.deposit(15);
 
-    expectError(
-      () => account.withdraw(20),
-      OperationError,
+    expect(() => account.withdraw(20)).toThrow(OperationError);
+    expect(() => account.withdraw(20)).toThrow(
       "Saldo insuficiente para realizar o saque.",
     );
 
